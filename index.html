@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Booking</title>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            color: #223bb6;
+            font-family: sans-serif;
+        }
+
+        .title {
+            padding: 10px;
+        }
+
+        .container {
+            min-width: 500px;
+            border: 1px solid #bbb;
+            padding: 0px 20px;
+        }
+
+        .row {
+            padding: 20px 0px;
+        }
+
+        .options {
+            float: right;
+        }
+
+        .icon {
+            display: inline-block;
+            padding-right: 10px;
+            font-weight: 900;
+        }
+
+        .row:not(:last-child) {
+            border-bottom: 1px solid #bbb;
+
+        }
+
+        button {
+            display: inline-block;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            color: #fff;
+            background-color: #223bb6;
+            border: 0px;
+            outline: none;
+            margin: 0px 10px;
+        }
+
+        .plus {
+            background-color: #df2424;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="section">
+        <div class="title">
+            <i class="fa fa-users icon"></i> Choose number of <strong>people</strong>
+        </div>
+        <div class="container">
+            <div class="row">
+                <i class="fa fa-bed icon"></i> ROOMS
+                <div class="options">
+                    <button onclick="decRoom()" class="minus"><i class="fa fa-minus inverted"></i></button>
+                    <span id="roomsCount">1</span>
+                    <button onclick="incRoom()" class="plus"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+            <div class="row">
+                <i class="fa fa-user icon"></i> ADULTS
+                <div class="options">
+                    <button onclick="decAdults()" class="minus"><i class="fa fa-minus inverted"></i></button>
+                    <span id="adultsCount">1</span>
+                    <button onclick="incAdults()" class="plus"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+            <div class="row">
+                <i class="fa fa-child icon"></i> CHILDREN
+                <div class="options">
+                    <button onclick="decChildren()" class="minus"><i class="fa fa-minus inverted"></i></button>
+                    <span id="childrenCount">0</span>
+                    <button onclick="incChildren()" class="plus"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var roomsCountNode = document.querySelector('#roomsCount');
+        var adultsCountNode = document.querySelector('#adultsCount');
+        var childrenCountNode = document.querySelector('#childrenCount');
+        var roomsCount, adultsCount, childrenCount;
+
+        function initialise() 
+        {
+            roomsCount = Number(roomsCountNode.innerHTML);
+            adultsCount = Number(adultsCountNode.innerHTML);
+            childrenCount = Number(childrenCountNode.innerHTML);
+        }
+
+        function show() 
+        {
+            roomsCountNode.innerHTML = roomsCount;
+            adultsCountNode.innerHTML = adultsCount;
+            childrenCountNode.innerHTML = childrenCount;
+        }
+
+        function incRoom()
+        {
+            initialise();
+            roomsCount++;
+            var minCapacity = ((roomsCount - 1) * 4) + 1;
+            var taken = adultsCount + childrenCount;
+            var remaining = minCapacity - taken;
+            if (remaining > 0)
+            {
+                adultsCount += remaining;
+            }
+            show();
+        }
+
+        function decRoom()
+        {
+            initialise();
+            if (roomsCount == 1)
+                return;
+            roomsCount--;
+            var maxCapacity = roomsCount * 4;
+            var taken = adultsCount + childrenCount;
+            var overflown = taken - maxCapacity;
+            if (overflown > 0) {
+                adultsCount = maxCapacity;
+                childrenCount = 0;
+            }
+            show();
+        }
+
+        function incAdults() 
+        {
+            initialise();
+            adultsCount++;
+            roomsCount = Math.ceil((adultsCount + childrenCount) / 4);
+            show();
+        }
+
+        function decAdults() 
+        {
+            initialise();
+            if (adultsCount == 1)
+            {
+                return;
+            }
+            adultsCount--;
+            roomsCount = Math.ceil((adultsCount + childrenCount) / 4);
+            show();
+        }
+
+        function incChildren() 
+        {
+            initialise();
+            childrenCount++;
+            roomsCount = Math.ceil((adultsCount + childrenCount) / 4);
+            show();
+        }
+
+        function decChildren() 
+        {
+            initialise();
+            if (childrenCount == 0)
+            {
+                return;
+            }
+            childrenCount--;
+            roomsCount = Math.ceil((adultsCount + childrenCount) / 4);
+            show();
+        }
+
+    </script>
+</body>
+
+</html>
